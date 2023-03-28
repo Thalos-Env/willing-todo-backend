@@ -1,5 +1,6 @@
 package com.thalos.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -26,6 +27,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	private final UserService userService;
 	private final AuthenticateService authenticateService;
 	
+	@Autowired
+    private UnauthorizedEntryPoint unauthorizedEntryPoint;
+	
 	public SecurityConfiguration(@Lazy UserService userService, @Lazy AuthenticateService authenticateService) {
 		this.userService = userService;
 		this.authenticateService = authenticateService;
@@ -49,11 +53,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
+			http.authorizeRequests()
 		    .antMatchers(HttpMethod.POST, "/authenticate", "/api-docs/**", "/swagger-ui.html**").permitAll()
-		  //  .antMatchers("/v1/**").authenticated()	
+		    .antMatchers("/users/**").authenticated()	
 		    .and().csrf().disable()
 		    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-		    .and().addFilterBefore(new FilterAuthenticate(authenticateService, userService), UsernamePasswordAuthenticationFilter.class);
+		    .and().addFilterBefore(new FilterAuthenticate(authenticateService, userService), UsernamePasswordAuthenticationFilter.class)
+		    .exceptionHandling()
+            .authenticationEntryPoint(unauthorizedEntryPoint);
 	}
 }

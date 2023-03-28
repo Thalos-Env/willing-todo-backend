@@ -26,16 +26,17 @@ public class FilterAuthenticate extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		String header = request.getHeader("Authorization");
-		String token = null;
+		String token = null; 
+		
 		if(header != null && header.startsWith("Bearer")) {
 			token = header.substring(7, header.length());
-		}
+		} 
 		
 		if(authenticateService.verificarToken(token)) {
 			Long idUsuario = authenticateService.retornarIdUsuario(token);
 			User usuario = userService.getUserById(idUsuario);												
 			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities()));
-		}
+		} 
 		
 		filterChain.doFilter(request, response);
 	}
