@@ -15,7 +15,7 @@ public class TodoService {
 
 	private final TodoRepository todoRepository;
 
-	public Todo createTodo(Todo todo) {
+	public Todo createTodo(Todo todo) {		
 		todoRepository.save(todo);
 
 		return todo;
@@ -40,8 +40,8 @@ public class TodoService {
 		return todo;
 	}
 	
-	public List<Todo> getTodos() {
-		List<Todo> todo = todoRepository.findAll();
+	public List<Todo> getTodos(String username) {
+		List<Todo> todo = todoRepository.findAllByUsername(username);
 
 		return todo;
 	}

@@ -14,50 +14,66 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.thalos.entities.Todo;
+import com.thalos.entities.User;
 import com.thalos.services.TodoService;
+import com.thalos.services.UserService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequestMapping("/users")
 @RequiredArgsConstructor
-@RequestMapping("/todos")
 public class TodoController {
 
 	private final TodoService todoService;
+	private final UserService userService;
+	
+	public User verifyProfile(String username) {
+		return userService.getUserByUsername(username);
+	}
 
-	@PostMapping
-	public ResponseEntity<Todo> getTodoById(@RequestBody Todo todo) {
+	@PostMapping("/{username}/todos")
+	public ResponseEntity<Todo> getTodoById(@PathVariable String username, @RequestBody Todo todo) {
+		this.verifyProfile(username);
+		
 		Todo result = todoService.createTodo(todo);
 
 		return new ResponseEntity<>(result, HttpStatus.CREATED);
 	}
-	
-	@PutMapping("/{id}")
-	public ResponseEntity<Todo> modifyTodoById(@RequestBody Todo todo, @PathVariable Long id) {
+
+	@PutMapping("/{username}/todos/{id}")
+	public ResponseEntity<Todo> modifyTodoById(@PathVariable String username, @RequestBody Todo todo, @PathVariable Long id) {
+		this.verifyProfile(username);
+		
 		Todo result = todoService.modifyTodoById(todo, id);
 
 		return new ResponseEntity<>(result, HttpStatus.CREATED);
 	}
 
-	@GetMapping("/{id}")
-	public ResponseEntity<Todo> getTodoById(@PathVariable Long id) {
+	@GetMapping("/{username}/todos/{id}")
+	public ResponseEntity<Todo> getTodoById(@PathVariable String username, @PathVariable Long id) {
+		this.verifyProfile(username);
+		
 		Todo result = todoService.getTodoById(id);
 
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
-	@GetMapping
-	public ResponseEntity<List<Todo>> getTodos() {
-		List<Todo> result = todoService.getTodos();
+	@GetMapping("/{username}/todos")
+	public ResponseEntity<List<Todo>> getTodos(@PathVariable String username) {
+		this.verifyProfile(username);
+		
+		List<Todo> result = todoService.getTodos(username);
 
 		return ResponseEntity.ok(result);
 	}
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteTodoById(@PathVariable Long id) {
+	@DeleteMapping("/{username}/todos/{id}")
+	public ResponseEntity<?> deleteTodoById(@PathVariable String username, @PathVariable Long id) {
+		this.verifyProfile(username);
+		
 		todoService.deleteTodoById(id);
 
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
 }
