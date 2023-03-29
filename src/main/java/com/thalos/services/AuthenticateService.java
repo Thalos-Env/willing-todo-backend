@@ -49,7 +49,7 @@ public class AuthenticateService {
 		return Algorithm.HMAC256(secret);
 	}
 
-	private String gerarToken(Authentication authentication) {
+	public String gerarToken(Authentication authentication) {
 		User principal = (User) authentication.getPrincipal();
 
 		Date dataDeHoje = new Date();

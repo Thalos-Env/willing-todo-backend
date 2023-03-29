@@ -19,13 +19,13 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
 	private final UserService userService;
 	private final ProfileService profileService;
 
-	@PostMapping
+	@PostMapping("create")
 	public ResponseEntity<UserConsultDTO> createUser(@RequestBody UserRegisterDTO userDTO) {
 		Profile verifyProfile = profileService.searchProfileById(userDTO.getProfileId());
 		

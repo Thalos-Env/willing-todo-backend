@@ -56,6 +56,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			http.authorizeRequests()
 		    .antMatchers(HttpMethod.POST, "/authenticate", "/api-docs/**", "/swagger-ui.html**").permitAll()
 		    .antMatchers("/users/**").authenticated()	
+		    .antMatchers("/authenticate/**").authenticated()
+		    .antMatchers("/refresh**").authenticated()
 		    .and().csrf().disable()
 		    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		    .and().addFilterBefore(new FilterAuthenticate(authenticateService, userService), UsernamePasswordAuthenticationFilter.class)
