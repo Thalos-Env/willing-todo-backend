@@ -32,10 +32,10 @@ public class FilterAuthenticate extends OncePerRequestFilter {
 			token = header.substring(7, header.length());
 		} 
 		
-		if(authenticateService.verificarToken(token)) {
-			Long idUsuario = authenticateService.retornarIdUsuario(token);
-			User usuario = userService.getUserById(idUsuario);												
-			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities()));
+		if(authenticateService.verifyToken(token)) {
+			String username = authenticateService.returnUsername(token);
+			User user = userService.getUserByUsername(username);												
+			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
 		} 
 		
 		filterChain.doFilter(request, response);
