@@ -1,7 +1,5 @@
 package com.thalos.controllers;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,13 +27,13 @@ public class AuthenticateController {
 
 	@PostMapping("/authenticate")
 	public ResponseEntity<TokenDTO> autenticar(@RequestBody AuthenticateDTO authForm) {
-		return ResponseEntity.ok(authenticateService.autenticar(authForm));
+		return ResponseEntity.ok(authenticateService.authenticate(authForm));
 	}
 
 	@GetMapping("/refresh")
 	public ResponseEntity<TokenDTO> refreshToken() {
 		Authentication userOn = verifyUser();
-		TokenDTO tokenDTO = new TokenDTO(authenticateService.gerarToken(userOn));
+		TokenDTO tokenDTO = new TokenDTO(authenticateService.generateToken(userOn));
 
 		return ResponseEntity.ok(tokenDTO);
 	}

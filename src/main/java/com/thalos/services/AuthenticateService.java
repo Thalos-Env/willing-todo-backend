@@ -33,11 +33,11 @@ public class AuthenticateService {
 
 	private final AuthenticationManager authManager;
 
-	public TokenDTO autenticar(AuthenticateDTO authForm) throws AuthenticationException {
+	public TokenDTO authenticate(AuthenticateDTO authForm) throws AuthenticationException {
 		try {
 			Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(authForm.getUsername(), authForm.getPassword()));			
 			
-			String token = gerarToken(authentication);
+			String token = generateToken(authentication);
 
 			return new TokenDTO(token);
 		} catch (Exception e) {
@@ -45,40 +45,39 @@ public class AuthenticateService {
 		}
 	}
 
-	private Algorithm criarAlgoritmo() {
+	private Algorithm createAlgorithm() {
 		return Algorithm.HMAC256(secret);
 	}
 
-	public String gerarToken(Authentication authentication) {
+	public String generateToken(Authentication authentication) {
 		User principal = (User) authentication.getPrincipal();
 
-		Date dataDeHoje = new Date();
-		Date dataDeExpiracao = new Date(dataDeHoje.getTime() + Long.parseLong(expiration));
+		Date today = new Date();
+		Date expirationDate = new Date(today.getTime() + Long.parseLong(expiration));
 		return JWT.create()
 				  .withIssuer(issuer)
-				  .withExpiresAt(dataDeExpiracao)
-				  .withSubject(
-						  principal.getId()
-						  .toString())
-				  .sign(this.criarAlgoritmo());
+				  .withExpiresAt(expirationDate)
+				  .withSubject(principal.getUsername().toString())
+				  .sign(this.createAlgorithm());
 	}
 
-	public boolean verificarToken(String token) {
+	public boolean verifyToken(String token) {
 		try {
-			if (token == null) {
+			if (token == null) 
 				return false;
-			}
 
-			JWT.require(this.criarAlgoritmo()).withIssuer(issuer).build().verify(token);
+			JWT.require(this.createAlgorithm()).withIssuer(issuer).build().verify(token);
+			
 			return true;
 		} catch (JWTVerificationException exception) {
 			return false;
 		}
 	}
 
-	public Long retornarIdUsuario(String token) {
-		String subject = JWT.require(this.criarAlgoritmo()).withIssuer(issuer).build().verify(token).getSubject();
-		return Long.parseLong(subject);
+	public String returnUsername(String token) {
+		String subject = JWT.require(this.createAlgorithm()).withIssuer(issuer).build().verify(token).getSubject();
+		
+		return subject;
 	}
 }
 

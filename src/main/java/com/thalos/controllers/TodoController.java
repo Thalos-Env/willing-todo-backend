@@ -33,7 +33,7 @@ public class TodoController {
 	}
 
 	@PostMapping("/{username}/todos")
-	public ResponseEntity<Todo> getTodoById(@PathVariable String username, @RequestBody Todo todo) {
+	public ResponseEntity<Todo> getTodoByUsername(@PathVariable String username, @RequestBody Todo todo) {
 		this.verifyProfile(username);
 		
 		Todo result = todoService.createTodo(todo);

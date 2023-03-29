@@ -63,5 +63,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		    .and().addFilterBefore(new FilterAuthenticate(authenticateService, userService), UsernamePasswordAuthenticationFilter.class)
 		    .exceptionHandling()
             .authenticationEntryPoint(unauthorizedEntryPoint);
+			
+			http.cors();
+
 	}
 }
