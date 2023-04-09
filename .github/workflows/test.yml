@@ -1,0 +1,36 @@
+name: Pipeline de Teste
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up JDK 17 with Maven
+      uses: actions/setup-java@v2
+      with:
+        java-version: 17
+        distribution: adopt
+
+    - name: Build and Test
+      run: mvn clean test
+
+    - name: Jacoco Report
+      run: mvn jacoco:report
+
+    - name: Verify Code Coverage
+      run: |
+        COVERAGE=$(grep -oP '(?<=<td class="ctr2">)[0-9]+(?=%</td>)' target/site/jacoco/index.html)      
+        if [ "$COVERAGE" -ge "70" ]; then
+          echo "Code coverage is $COVERAGE%. Test passed!"
+        else
+          echo "Code coverage is $COVERAGE%. Test failed! Required 70%."
+        exit 1
+        fi
