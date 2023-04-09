@@ -15,12 +15,20 @@ import lombok.RequiredArgsConstructor;
 @Data
 public class Todo {
 
+	public Todo(Long id, String description, OffsetDateTime targetDate, String username, boolean done) {
+		this.id = id;
+		this.description = description;
+		this.targetDate = targetDate;
+		this.username = username;
+		this.done = done;
+	}
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	protected Long id;
 	
-	private String description;
-	private OffsetDateTime targetDate;
-	private String username;
-	private boolean done;
+	protected String description;
+	protected OffsetDateTime targetDate;
+	protected String username;
+	protected boolean done;
 }

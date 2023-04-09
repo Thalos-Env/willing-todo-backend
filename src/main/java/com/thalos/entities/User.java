@@ -25,14 +25,14 @@ public class User implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	protected Long id;
 
-	private String username;
-	private String password;
+	protected String username;
+	protected String password;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "profile_id")
-	private Profile profile;
+	protected Profile profile;
 
 	public User(Long id, String username, String password, Profile profile) {
 		this.id = id;
