@@ -27,19 +27,11 @@ jobs:
 
     - name: Verify Code Coverage
       run: |
-        COVERAGE=$(grep -oP '(?<=<td class="ctr2">)[0-9]+(?=%\?)' target/site/jacoco/index.html)
-        COVERAGE_DEC=$(echo "scale=2; $COVERAGE/100" | bc)
-        if (( $(echo "$COVERAGE_DEC > 0.1" | bc -l) )); then
+        COVERAGE=$(grep -oP '(?<=<td class="ctr2">)[0-9]+(?=%\?)' target/site/jacoco/index.html)      
+        if [ "$COVERAGE" -ge "10" ]; then
           echo "Code coverage is $COVERAGE%. Test passed!"
         else
           echo "Code coverage is $COVERAGE%. Test failed! Required 10%."
         exit 1
         fi
-        #COVERAGE=$(grep -oP '(?<=<td class="ctr2">)[0-9]+(?=%\?)' target/site/jacoco/index.html)      
-        #if [ "$COVERAGE" -ge "10" ]; then
-        #  echo "Code coverage is $COVERAGE%. Test passed!"
-        #else
-        #  echo "Code coverage is $COVERAGE%. Test failed! Required 10%."
-        #exit 1
-        #fi
         
