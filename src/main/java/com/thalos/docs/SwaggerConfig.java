@@ -23,6 +23,7 @@ public class SwaggerConfig {
                 "http://www.levythalia.com",
                 "thalialevy26@gmail.com");
     }
+    
     private ApiInfoBuilder informacoesApi() {
 
         ApiInfoBuilder apiInfoBuilder = new ApiInfoBuilder();
@@ -36,6 +37,7 @@ public class SwaggerConfig {
         return apiInfoBuilder;
 
     }
+    
     @Bean
     public Docket detalheApi() {
         Docket docket = new Docket(DocumentationType.SWAGGER_2);
