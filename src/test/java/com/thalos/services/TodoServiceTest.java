@@ -1,8 +1,8 @@
 package com.thalos.services;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
@@ -26,11 +26,11 @@ import com.thalos.repositories.TodoRepository;
 public class TodoServiceTest {
 	
 	@MockBean
-	private TodoRepository todoRepository;
+	private TodoRepository todoRepositoryMock;
 	
 	@Autowired
 	private TodoService todoService;
-	
+
 	private TodoBuilder todoBuilder;
 	private Long id;
 	private String username;
@@ -49,7 +49,7 @@ public class TodoServiceTest {
 	@Test
 	@DisplayName("Should find todo by id")
 	public void shouldFindTodoById() {
-		when(todoRepository.findById(id)).thenReturn(Optional.of(todoBuilder));
+		when(todoRepositoryMock.findById(id)).thenReturn(Optional.of(todoBuilder));
 		
 		Todo result = todoService.getTodoById(id);
 
@@ -59,10 +59,20 @@ public class TodoServiceTest {
 	@Test
 	@DisplayName("Should all user todos")
 	public void shouldAllUserTodos() {
-		when(todoRepository.findAllByUsername(username)).thenReturn(List.of(todoBuilder));
+		when(todoRepositoryMock.findAllByUsername(username)).thenReturn(List.of(todoBuilder));
 		
 		List<Todo> result = todoService.getTodos(username);
 
 		assertEquals(List.of(todoBuilder), result);
+	}
+	
+	@Test
+	@DisplayName("Should delete todo by id")
+	public void shouldDeleteTodoById() {
+		doNothing().when(todoRepositoryMock).deleteById(id);
+		
+		todoService.deleteTodoById(id);
+		
+		verify(todoRepositoryMock).deleteById(id);
 	}
 }
