@@ -1,7 +1,9 @@
 package com.thalos.controllers;
 
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -95,5 +97,16 @@ public class TodoControllerTest {
 				  .contentType(MediaType.APPLICATION_JSON))
 				  .andExpect(status().isOk())
 				  .andExpect(jsonPath("$.size()").value(List.of(todoBuilder).size()));
+	}
+	
+	@Test
+	@DisplayName("Should delete todo by id and status 204")
+	public void shouldDeleteTodoByIdAndStatus200() throws Exception {
+		doNothing().when(todoServiceMock).deleteTodoById(id);
+		when(userService.getUserByUsername(username)).thenReturn(userBuilder);
+
+		mockMvc.perform(delete(REQUEST_MAPPING + "/" + id))
+		.andExpect(status().isOk())
+		.andExpect(content().string(""));
 	}
 }
